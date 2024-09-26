@@ -598,14 +598,18 @@ cexs=rep(1.3,length(means1))
 cexs[1]=5
 cexs[2:6]=3
 
+outfile=paste0(outstem,".ancestries.pdf")
+pdf(outfile,height=6,width=8)
 plot_title=paste0("Closest Ref Panel: ",colnames(PCA.DETAILS)[7+closest_ref]," (distance ",signif(min(distances),2),")")
 plot(means1,means2,col=cols,pch=pchs,lwd=3,cex=cexs,xlab="Principal Component Axis 1",ylab="Principal Component Axis 2",main=plot_title)
 legend("bottomright",leg=c("AFR","AMR","EAS","EUR","SAS","FIN"),title="Ancestries",fill=1:6,bty="n",cex=1.5,ncol=2)
 legend("topright",leg=c("GWAS Summary Stats","MegaPRS Ref Panels","1000GP Populations"),col=c("orange","darkgrey","darkgrey"),cex=1.5,pch=c(3,1,4),bty="n",lwd=3,lty=NA)
-
-outfile=paste0(outstem,".ancestries.pdf")
-dev.copy(pdf,outfile,height=6,width=8)
 dev.off()
+
+plot_title=paste0("Closest Ref Panel: ",colnames(PCA.DETAILS)[7+closest_ref]," (distance ",signif(min(distances),2),")")
+plot(means1,means2,col=cols,pch=pchs,lwd=3,cex=cexs,xlab="Principal Component Axis 1",ylab="Principal Component Axis 2",main=plot_title)
+legend("bottomright",leg=c("AFR","AMR","EAS","EUR","SAS","FIN"),title="Ancestries",fill=1:6,bty="n",cex=1.5,ncol=2)
+legend("topright",leg=c("GWAS Summary Stats","MegaPRS Ref Panels","1000GP Populations"),col=c("orange","darkgrey","darkgrey"),cex=1.5,pch=c(3,1,4),bty="n",lwd=3,lty=NA)
 
 cat(paste0("The PCA plot has been saved in ", outfile,"\n\n"))
 }
