@@ -419,7 +419,7 @@ final_ss=cbind(gwas_all[diff_alleles,c(1,2,3)],Z_stats,sample_sizes,a1_freq)
 colnames(final_ss)=c("Predictor","A1","A2","Z","n","A1Freq")
 }
 
-outfile=paste0(outstem,".summaries")
+outfile=paste0(outstem,".ALL.summaries")
 write.table(final_ss,outfile,row.names=F,col.names=TRUE,quote=FALSE)
 cat(paste0("The formatted summary statistics are saved in the file ",outfile,"\n\n"))
 
