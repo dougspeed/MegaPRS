@@ -136,7 +136,7 @@ if(!is.null(nCol)|!is.null(ncasesCol)|!is.null(fixedn)){count=count+1}
 if(count==0)
 {
 cat(paste0("You should now rerun this function adding the following arguments:\
-use NameCol to specify the column containing SNP names (look for labels such as Predictor, SNP, Marker or rsID);\
+use NameCol to specify the column containing predictor names (look for labels such as Predictor, SNP, Marker or rsID);\
 use A1Col to specify the column containing the A1 alleles (look for labels such as A1 or EffectAlle);\
 use A2Col to specify the column containing the A2 alleles (look for labels such as A2 or OtherAllele);\
 use EffectCol to specify the column containing effect sizes (look for labels such as Effect, Beta, OR or LogOR);\
@@ -150,7 +150,7 @@ return(invisible())
 if(count<6)
 {
 cat(paste0("Error, you must provide the following arguments:\
-use NameCol to specify the column containing SNP names (look for labels such as Predictor, SNP, Marker or rsID);\
+use NameCol to specify the column containing predictor names (look for labels such as Predictor, SNP, Marker or rsID);\
 use A1Col to specify the column containing the A1 alleles (look for labels such as A1 or EffectAlle);\
 use A2Col to specify the column containing the A2 alleles (look for labels such as A2 or OtherAllele);\
 use EffectCol to specify the column containing effect sizes (look for labels such as Effect, Beta, OR or LogOR);\
@@ -260,7 +260,7 @@ if(length(Name_find)>1)
 {return(paste0("Error, there is more than one column called ", FreqCol))}
 }
 
-cat(paste0("Will read SNP names from the column called ", gwas_head[Name_find],"\n"))
+cat(paste0("Will read predictor names from the column called ", gwas_head[Name_find],"\n"))
 cat(paste0("Will read A1 alleles from the column called ", gwas_head[A1_find],"\n"))
 cat(paste0("Will read A2 alleles from the column called ", gwas_head[A2_find],"\n"))
 
