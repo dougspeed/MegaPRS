@@ -17,6 +17,8 @@
 ################################################
 
 
+#' Format GWAS results
+#' @param gwasfile The name of the file containing GWAS results
 formatSS=function(gwasfile=NULL, outstem=NULL, NameCol=NULL, A1Col=NULL, A2Col=NULL, ZCol=NULL, EffectCol=NULL, SECol=NULL, PCol=NULL, nCol=NULL, ncasesCol=NULL, ncontrolsCol=NULL, fixedn=NULL, FreqCol=NULL, headerRows=NULL)
 {
 ################
@@ -88,7 +90,7 @@ comma_sep=0
 if(length(gwas_head)==1)	#try comma delimited
 {
 comma_sep=1
-gwas_head=read.table(gwasfile,head=FALSE,nrow=1,comment.char="",comment.char="",skip=headerRows-1,sep=",")
+gwas_head=read.table(gwasfile,head=FALSE,nrow=1,comment.char="",skip=headerRows-1,sep=",")
 
 if(length(gwas_head)==1)
 {return(paste0("Error, ", gwasfile," appears to have only one column (have tried to read using both spaces and commas as delimiters)"))}
