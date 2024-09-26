@@ -357,11 +357,6 @@ cat(paste0("Warning, only ",length(diff_alleles), " of these predictors have dis
 ################
 #print out summary statistics for all valid predictors
 
-if(length(diff_alleles)==nrow(gwas_all))
-{cat(paste0("Formatting summary statistics for all ", nrow(gwas_all), " predictors\n"))}
-else
-{cat(paste0("Formatting summary statistics for the ", length(diff_alleles), " predictors with distinct alleles\n"))}
-
 if(!is.null(ZCol)){Z_stats=as.numeric(gwas_all[diff_alleles,4])}
 else
 {
@@ -416,18 +411,12 @@ if(length(valid_preds)<length(diff_alleles))
 
 #print out some summaries
 
-print("lengths are")
-print(length(valid_preds))
-print(length(Z_stats))
-print(length(sample_sizes))
-print(length(a1_freq))
-print(length(diff_alleles))
-
 cat(paste0("The median Z statistic is ", round(median(Z_stats[valid_preds]),2)," (this should be close to zero), while ", round(100*mean(Z_stats[valid_preds]>0),1),"% are positive (this should be close to 50%)\n"))
 
 cat(paste0("The average sample size is ", round(mean(sample_sizes[valid_preds]),1)," (the range is ", min(sample_sizes[valid_preds])," to ", max(sample_sizes[valid_preds]),")\n"))
 
 #save results
+
 if(is.null(FreqCol))
 {
 final_ss=cbind(gwas_all[diff_alleles,c(1,2,3)],Z_stats,sample_sizes)[valid_preds,]
