@@ -33,7 +33,7 @@ megaprs(
 
 \item{onechr}{(Optional) Used to restrict to predictors on a single chromosome}
 
-\item{extractfile}{(Optional) Used to restrict to predictors in the specified file}
+\item{extractfile}{(Optional) Used to restrict to predictors in the specified file#' @export}
 }
 \description{
 Estimate predictor effect sizes

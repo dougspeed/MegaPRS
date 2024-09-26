@@ -19,6 +19,7 @@
 
 #' Format GWAS results
 #' @param gwasfile The name of the file containing GWAS results
+#' @export
 formatSS=function(gwasfile=NULL, outstem=NULL, NameCol=NULL, A1Col=NULL, A2Col=NULL, ZCol=NULL, EffectCol=NULL, SECol=NULL, PCol=NULL, nCol=NULL, ncasesCol=NULL, ncontrolsCol=NULL, fixedn=NULL, FreqCol=NULL, headerRows=NULL)
 {
 ################
@@ -27,18 +28,6 @@ start_time=Sys.time()
 
 end_time=Sys.time()
 cat(paste0("Start at ",start_time,"\n\n"))
-
-
-################
-#load included data files
-
-data(GENO.SNPs2)
-data(HAPMAP.SNPs)
-data(PCA.DETAILS)
-
-#load("/home/doug/MegaPRS/data/GENO.SNPs.rda")
-#load("/home/doug/MegaPRS/data/HAPMAP.SNPs.rda")
-#load("/home/doug/MegaPRS/data/PCA.DETAILS.rda")
 
 
 ################
@@ -305,6 +294,14 @@ if(!is.null(ZCol)){numoff=5}
 else{numoff=6}
 if(is.null(FreqCol)){gotfreq=1}
 else{gotfreq=0}
+
+
+################
+#load included data files
+
+data(GENO.SNPs)
+data(HAPMAP.SNPs)
+data(PCA.DETAILS)
 
 
 ################

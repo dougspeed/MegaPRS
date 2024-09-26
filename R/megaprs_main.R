@@ -25,7 +25,8 @@
 #' @param jackknife Whether to estimate standard deviations via jackknifing (Default value FALSE)
 #' @param perpredhers (Optional) Used to provide per-predictor heritabilities (the file should have two columns, providing predictor names and heritabilities)
 #' @param onechr (Optional) Used to restrict to predictors on a single chromosome
-#' @param extractfile (Optional) Used to restrict to predictors in the specified file
+#' @param extractfile (Optional) Used to restrict to predictors in the specified file#' @export
+#' @export
 #' @examples
 #' megaprs(corstem="example", ssfile="gwas.summaries", outfile="output.effects")
 megaprs=function(corstem=NULL, ssfile=NULL, outfile=NULL, power=-0.25, shrink=0.9, jackknife=FALSE, perpredhers=NULL, onechr=NULL, extractfile=NULL)
