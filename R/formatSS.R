@@ -331,7 +331,7 @@ cat(paste0("Reading GWAS results from ",gwasfile,"\n"))
 
 file_size=file.info(gwasfile)$size/2^20
 if(file_size<100){cat(paste0("The file is relatively small (", round(file_size),"Mb), so this should only take seconds\n\n"))}
-else{cat(paste0("The file is quite large (", round(file_size),"Mb), so this can take a few minutes\n\n"))}
+else{cat(paste0("The file is relatively large (", round(file_size),"Mb), so this might take a few minutes\n\n"))}
 
 if(comma_sep==0){gwas_all=read.table(gwasfile,head=FALSE,colClasses=classes_all,comment.char="",skip=headerRows,fill=TRUE)[,back_cols]}
 else{gwas_all=read.table(gwasfile,head=FALSE,colClasses=classes_all,comment.char="",skip=headerRows,sep=",",fill=TRUE)[,back_cols]}
@@ -423,12 +423,12 @@ cat(paste0("The average sample size is ", round(mean(sample_sizes[valid_preds]),
 #save results
 if(is.null(FreqCol))
 {
-final_ss=cbind(gwas_all[,c(1,2,3)],Z_stats,sample_sizes)[valid_preds,]
+final_ss=cbind(gwas_all[diff_alleles,c(1,2,3)],Z_stats,sample_sizes)[valid_preds,]
 colnames(final_ss)=c("Predictor","A1","A2","Z","n")
 }
 else
 {
-final_ss=cbind(gwas_all[valid_preds,c(1,2,3)],Z_stats,sample_sizes,a1_freq)[valid_preds,]
+final_ss=cbind(gwas_all[diff_alleles,c(1,2,3)],Z_stats,sample_sizes,a1_freq)[valid_preds,]
 colnames(final_ss)=c("Predictor","A1","A2","Z","n","A1Freq")
 }
 
