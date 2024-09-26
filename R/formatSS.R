@@ -328,8 +328,8 @@ classes_all[req_cols]=req_classes
 back_cols=match(req_cols,sort(req_cols))
 
 cat(paste0("Reading GWAS results from ",gwasfile,"\n"))
-if(comma_sep==0){gwas_all=read.table(gwasfile,head=FALSE,colClasses=classes_all,comment.char="",skip=headerRows)[,back_cols]}
-else{gwas_all=read.table(gwasfile,head=FALSE,colClasses=classes_all,comment.char="",skip=headerRows,sep=",")[,back_cols]}
+if(comma_sep==0){gwas_all=read.table(gwasfile,head=FALSE,colClasses=classes_all,comment.char="",skip=headerRows,fill=TRUE)[,back_cols]}
+else{gwas_all=read.table(gwasfile,head=FALSE,colClasses=classes_all,comment.char="",skip=headerRows,sep=",",fill=TRUE)[,back_cols]}
 colnames(gwas_all)=gwas_head[req_cols]
 
 cat(paste0("In total, there are results for ", nrow(gwas_all)," SNPs\n\n"))
