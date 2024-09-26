@@ -604,7 +604,7 @@ legend("bottomright",leg=c("AFR","AMR","EAS","EUR","SAS","FIN"),title="Ancestrie
 legend("topright",leg=c("GWAS Summary Stats","MegaPRS Ref Panels","1000GP Populations"),col=c("orange","darkgrey","darkgrey"),cex=1.5,pch=c(3,1,4),bty="n",lwd=3,lty=NA)
 
 outfile=paste0(outstem,".ancestries.pdf")
-dev.copy(pdf,outfile,height=6,width=6)
+dev.copy(pdf,outfile,height=6,width=8)
 dev.off()
 
 cat(paste0("The PCA plot has been saved in ", outfile,"\n\n"))
