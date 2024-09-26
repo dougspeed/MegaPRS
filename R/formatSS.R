@@ -416,6 +416,13 @@ if(length(valid_preds)<length(diff_alleles))
 
 #print out some summaries
 
+print("lengths are")
+print(length(valid_preds))
+print(length(Zstats))
+print(length(sample_sizes))
+print(length(a1_freq))
+print(length(diff_alleles))
+
 cat(paste0("The median Z statistic is ", round(median(Z_stats[valid_preds]),2)," (this should be close to zero), while ", round(100*mean(Z_stats[valid_preds]>0),1),"% are positive (this should be close to 50%)\n"))
 
 cat(paste0("The average sample size is ", round(mean(sample_sizes[valid_preds]),1)," (the range is ", min(sample_sizes[valid_preds])," to ", max(sample_sizes[valid_preds]),")\n"))
