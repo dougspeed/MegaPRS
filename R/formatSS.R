@@ -337,7 +337,7 @@ if(comma_sep==0){gwas_all=read.table(gwasfile,head=FALSE,colClasses=classes_all,
 else{gwas_all=read.table(gwasfile,head=FALSE,colClasses=classes_all,comment.char="",skip=headerRows,sep=",",fill=TRUE)[,back_cols]}
 colnames(gwas_all)=gwas_head[req_cols]
 
-cat(paste0("In total, there are results for ", nrow(gwas_all)," SNPs\n\n"))
+cat(paste0("In total, there are results for ", nrow(gwas_all)," predictors\n\n"))
 
 
 ################
@@ -346,21 +346,21 @@ cat(paste0("In total, there are results for ", nrow(gwas_all)," SNPs\n\n"))
 diff_alleles=which(gwas_all[,2]!=gwas_all[,3])
 if(length(diff_alleles)==0)
 {
-return(paste0("Error, none of the SNPs have distinct alleles (e.g., the first SNP is called ", gwas_all[1,1], ", and both its alleles are ", gwas_all[1,2],")"))
+return(paste0("Error, none of the predictors have distinct alleles (e.g., the first SNP is called ", gwas_all[1,1], ", and both its alleles are ", gwas_all[1,2],")"))
 }
 if(length(diff_alleles)<nrow(gwas_all))
 {
-cat(paste0("Warning, only ",length(diff_alleles), " of these SNPs have distinct alleles (the remaining ", nrow(gwas_all)-length(diff_alleles)," will be ignored)\n\n"))
+cat(paste0("Warning, only ",length(diff_alleles), " of these predictors have distinct alleles (the remaining ", nrow(gwas_all)-length(diff_alleles)," will be ignored)\n\n"))
 }
 
 
 ################
-#print out summary statistics for all SNPs
+#print out summary statistics for all valid predictors
 
 if(length(diff_alleles)==nrow(gwas_all))
-{cat(paste0("Creating the formatted summary statistics for all ", nrow(gwas_all), " SNPs\n"))}
+{cat(paste0("Formatting summary statistics for all ", nrow(gwas_all), " predictors\n"))}
 else
-{cat(paste0("Creating the formatted summary statistics for all ", length(diff_alleles), " SNPs with distinct alleles\n"))}
+{cat(paste0("Formatting summary statistics for the ", length(diff_alleles), " predictors with distinct alleles\n"))}
 
 if(!is.null(ZCol)){Z_stats=as.numeric(gwas_all[diff_alleles,4])}
 else
@@ -371,25 +371,26 @@ if(EffectCol=="OR"){effect_sizes=log(effect_sizes)}
 if(!is.null(SECol))
 {
 SEs=as.numeric(gwas_all[diff_alleles,5])
-if(sum(SEs<0)>0){return(paste0("Error, ", sum(SEs<0), " SNPs have negative SEs"))}
-if(sum(SEs==0)>0){return(paste0("Error, ", sum(SEs<0), " SNPs have SE zero"))}
+if(sum(SEs<0)>0){return(paste0("Error, ", sum(SEs<0), " predictors have negative SEs"))}
+if(sum(SEs==0)>0){return(paste0("Error, ", sum(SEs<0), " predictors have SE zero"))}
 
 Z_stats=effect_sizes/SEs
 }
 else
 {
 pvalues=as.numeric(gwas_all[diff_alleles,5])
-if(sum(pvalues<0)>0){return(paste0("Error, ", sum(pvalues<0), " SNPs have p-values below zero"))}
-if(sum(pvalues>1)>0){return(paste0("Error, ", sum(pvalues>1), " SNPs have p-values above one"))}
+if(sum(pvalues<0)>0){return(paste0("Error, ", sum(pvalues<0), " predictors have p-values below zero"))}
+if(sum(pvalues>1)>0){return(paste0("Error, ", sum(pvalues>1), " predictors have p-values above one"))}
 
 small_pvalues=which(pvalues<1e-300)
 if(length(small_pvalues)>0)
 {
-cat(paste0("Warning, ", length(small_pvalues), " SNPs have p-values below 1e-300 (the p-values will be rounded up to 1e-300)\n"))
+cat(paste0("Warning, ", length(small_pvalues), " predictors have p-values below 1e-300 (the p-values will be rounded up to 1e-300)\n"))
 pvalues[small_pvalues]=1e-300
 }
 
-Z_stats=sign(effect_sizes)*qnorm(pvalues/2,lower=FALSE)}
+Z_stats=sign(effect_sizes)*qnorm(pvalues/2,lower=FALSE)
+}
 }
 
 if(!is.null(nCol)){sample_sizes=as.numeric(gwas_all[diff_alleles,numoff])}
@@ -399,23 +400,35 @@ if(!is.null(fixedn)){sample_sizes=rep(fixedn,length(common_hapmap_end))}
 if(!is.null(FreqCol))
 {
 a1_freq=as.numeric(gwas_all[diff_alleles,ncol(gwas_all)])
-if(sum(a1_freq<0)>0){return(paste0("Error, ", sum(a1_freq<0), " SNPs have frequency below zero"))}
-if(sum(a1_freq>1)>0){return(paste0("Error, ", sum(a1_freq>1), " SNPs have frequency above one"))}
+if(sum(a1_freq<0)>0){return(paste0("Error, ", sum(a1_freq<0), " predictors have frequency below zero"))}
+if(sum(a1_freq>1)>0){return(paste0("Error, ", sum(a1_freq>1), " predictors have frequency above one"))}
 }
 
-cat(paste0("The median Z statistic is ", round(median(Z_stats),2)," (this should be close to zero), while ", round(100*mean(Z_stats>0),1),"% are positive (this should be close to 50%)\n"))
+#which predictors have valid resutls
 
-cat(paste0("The average sample size is ", round(mean(sample_sizes),1)," (the range is ", min(sample_sizes)," to ", max(sample_sizes),")\n"))
+if(is.null(FreqCol)){valid_preds=which(!is.na(Z_stats)&!is.na(samples_sizes))}
+else{valid_preds=which(!is.na(Z_stats)&!is.na(samples_sizes)&!is.na(a1_freq))}
+
+if(length(valid_preds)==0)
+{return(paste0("Error, none of the ", length(diff_alleles)," predictors have valid results"))}
+if(length(valid_preds)<length(diff_alleles))
+{cat(paste0("Warning, only ", length(valid_preds), " of the ", length(diff_alleles)," predictors have valid results\n\n"))}
+
+#print out some summaries
+
+cat(paste0("The median Z statistic is ", round(median(Z_stats[valid_preds]),2)," (this should be close to zero), while ", round(100*mean(Z_stats[valid_preds]>0),1),"% are positive (this should be close to 50%)\n"))
+
+cat(paste0("The average sample size is ", round(mean(sample_sizes[valid_preds]),1)," (the range is ", min(sample_sizes[valid_preds])," to ", max(sample_sizes[valid_preds]),")\n"))
 
 #save results
 if(is.null(FreqCol))
 {
-final_ss=cbind(gwas_all[diff_alleles,c(1,2,3)],Z_stats,sample_sizes)
+final_ss=cbind(gwas_all[valid_preds,c(1,2,3)],Z_stats,sample_sizes)
 colnames(final_ss)=c("Predictor","A1","A2","Z","n")
 }
 else
 {
-final_ss=cbind(gwas_all[diff_alleles,c(1,2,3)],Z_stats,sample_sizes,a1_freq)
+final_ss=cbind(gwas_all[valid_preds,c(1,2,3)],Z_stats,sample_sizes,a1_freq)
 colnames(final_ss)=c("Predictor","A1","A2","Z","n","A1Freq")
 }
 
