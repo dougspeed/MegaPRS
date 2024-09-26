@@ -406,8 +406,8 @@ if(sum(a1_freq>1)>0){return(paste0("Error, ", sum(a1_freq>1), " predictors have 
 
 #which predictors have valid resutls
 
-if(is.null(FreqCol)){valid_preds=which(!is.na(Z_stats)&!is.na(samples_sizes))}
-else{valid_preds=which(!is.na(Z_stats)&!is.na(samples_sizes)&!is.na(a1_freq))}
+if(is.null(FreqCol)){valid_preds=which(!is.na(Z_stats)&!is.na(sample_sizes))}
+else{valid_preds=which(!is.na(Z_stats)&!is.na(sample_sizes)&!is.na(a1_freq))}
 
 if(length(valid_preds)==0)
 {return(paste0("Error, none of the ", length(diff_alleles)," predictors have valid results"))}
