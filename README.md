@@ -1,4 +1,7 @@
-To install MegaPRS, open R, then type
+###
+Installation
+
+MegaPRS is a package for the statistical software R. To install MegaPRS, open R and type
 ```
 remotes::install_github("dougspeed/MegaPRS")
 ```
@@ -7,3 +10,11 @@ This command should take less than ten seconds to complete. Note that it require
 install.packages("remotes")
 ```
 then following the on-screen instructions.
+
+###
+Using MegaPRS
+
+Open R, then type 
+```
+library("MegaPRS")
+```
