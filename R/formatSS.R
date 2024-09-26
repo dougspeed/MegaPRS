@@ -423,12 +423,12 @@ cat(paste0("The average sample size is ", round(mean(sample_sizes[valid_preds]),
 #save results
 if(is.null(FreqCol))
 {
-final_ss=cbind(gwas_all[valid_preds,c(1,2,3)],Z_stats,sample_sizes)
+final_ss=cbind(gwas_all[,c(1,2,3)],Z_stats,sample_sizes)[valid_preds,]
 colnames(final_ss)=c("Predictor","A1","A2","Z","n")
 }
 else
 {
-final_ss=cbind(gwas_all[valid_preds,c(1,2,3)],Z_stats,sample_sizes,a1_freq)
+final_ss=cbind(gwas_all[valid_preds,c(1,2,3)],Z_stats,sample_sizes,a1_freq)[valid_preds,]
 colnames(final_ss)=c("Predictor","A1","A2","Z","n","A1Freq")
 }
 
