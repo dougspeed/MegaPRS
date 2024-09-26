@@ -418,7 +418,7 @@ if(length(valid_preds)<length(diff_alleles))
 
 print("lengths are")
 print(length(valid_preds))
-print(length(Zstats))
+print(length(Z_stats))
 print(length(sample_sizes))
 print(length(a1_freq))
 print(length(diff_alleles))
