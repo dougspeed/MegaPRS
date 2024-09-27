@@ -135,34 +135,32 @@ if(!is.null(nCol)|!is.null(ncasesCol)|!is.null(fixedn)){count=count+1}
 
 if(count==0)
 {
-cat(paste0("You should now rerun this function adding the following seven arguments:\
+cat(paste0("You should now rerun this function adding the following arguments:\
 use NameCol to specify the predictor names (look for column labels such as Predictor, SNP, Marker or rsID)\
 use A1Col to specify the A1 alleles (look for column labels such as A1 or EffectAlle)\
 use A2Col to specify the A2 alleles (look for column labels such as A2 or OtherAllele)\
 use EffectCol to specify the effect sizes (look for column labels such as Effect, Beta, OR or LogOR)\
 use SECol to specify the standard errors (look for column labels such as SE or SD)\
-use nCol to specify the sample sizes (look for column labels such as n, N or nEff)\
-and use FreqCol to specify the A1 allele frequencies (look for labels such as Freq or FCON)\n\
+and use nCol to specify the sample sizes (look for column labels such as n, N or nEff)\n\
+In addition, we recommend you use FreqCol to specify the A1 allele frequencies (look for labels such as Freq or FCON)\n\
 For example, if the predictor names are stored in the column labelled ", gwas_head[1], ", you should add NameCol=\"", gwas_head[1],"\"\n\
 Note 1: if p-values are provided, you can use PCol instead of SECol, while if Z-test statistics are provided, you can use ZCol instead of EffectCol and SECol\n\
-Note 2: if the sample size is divided into numbers of cases and controls, you can replace nCol with ncasesCol and ncontrolsCol (if sample size is not provided, you can instead use fixedn to provide the total sample size)\n\
-Note 3: the argument FreqCol is optional (however, we recommend its use, because it enables quality control and ancestry assessment)\n\n"))
+Note 2: if the sample size is divided into numbers of cases and controls, you can replace nCol with ncasesCol and ncontrolsCol (if sample size is not provided, you can instead use fixedn to provide the total sample size)\n\n"))
 return(invisible())
 }
 if(count<6)
 {
-cat(paste0("You should now rerun this function adding the following seven arguments:\
+cat(paste0("Error, there are insufficient column arguments; please ensure you include the following:\
 use NameCol to specify the predictor names (look for column labels such as Predictor, SNP, Marker or rsID)\
 use A1Col to specify the A1 alleles (look for column labels such as A1 or EffectAlle)\
 use A2Col to specify the A2 alleles (look for column labels such as A2 or OtherAllele)\
 use EffectCol to specify the effect sizes (look for column labels such as Effect, Beta, OR or LogOR)\
 use SECol to specify the standard errors (look for column labels such as SE or SD)\
-use nCol to specify the sample sizes (look for column labels such as n, N or nEff)\
-and use FreqCol to specify the A1 allele frequencies (look for labels such as Freq or FCON)\n\
+and use nCol to specify the sample sizes (look for column labels such as n, N or nEff)\n\
+In addition, we recommend you use FreqCol to specify the A1 allele frequencies (look for labels such as Freq or FCON)\n\
 For example, if the predictor names are stored in the column labelled ", gwas_head[1], ", you should add NameCol=\"", gwas_head[1],"\"\n\
 Note 1: if p-values are provided, you can use PCol instead of SECol, while if Z-test statistics are provided, you can use ZCol instead of EffectCol and SECol\n\
-Note 2: if the sample size is divided into numbers of cases and controls, you can replace nCol with ncasesCol and ncontrolsCol (if sample size is not provided, you can instead use fixedn to provide the total sample size)\n\
-Note 3: the argument FreqCol is optional (however, we recommend its use, because it enables quality control and ancestry assessment)\n\n"))
+Note 2: if the sample size is divided into numbers of cases and controls, you can replace nCol with ncasesCol and ncontrolsCol (if sample size is not provided, you can instead use fixedn to provide the total sample size)\n\n"))
 return(invisible())
 }
 
@@ -405,7 +403,7 @@ Z_stats=sign(effect_sizes)*qnorm(pvalues/2,lower=FALSE)
 
 if(!is.null(nCol)){sample_sizes=as.numeric(gwas_all[diff_alleles,num_offset])}
 if(!is.null(ncasesCol)){sample_sizes=as.numeric(gwas_all[diff_alleles,num_offset])+as.numeric(gwas_all[diff_alleles,num_offset+1])}
-if(!is.null(fixedn)){sample_sizes=rep(fixedn,length(common_hapmap_end))}
+if(!is.null(fixedn)){sample_sizes=rep(fixedn,length(diff_alleles))}
 
 if(!is.null(FreqCol))
 {
