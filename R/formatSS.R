@@ -135,7 +135,7 @@ if(!is.null(nCol)|!is.null(ncasesCol)|!is.null(fixedn)){count=count+1}
 
 if(count==0)
 {
-cat(paste0("You should now rerun this function adding the following arguments:\
+cat(paste0("You should now rerun this function adding the following seven arguments:\
 use NameCol to specify the predictor names (look for column labels such as Predictor, SNP, Marker or rsID)\
 use A1Col to specify the A1 alleles (look for column labels such as A1 or EffectAlle)\
 use A2Col to specify the A2 alleles (look for column labels such as A2 or OtherAllele)\
@@ -151,7 +151,7 @@ return(invisible())
 }
 if(count<6)
 {
-cat(paste0("You should now rerun this function adding the following arguments:\
+cat(paste0("You should now rerun this function adding the following seven arguments:\
 use NameCol to specify the predictor names (look for column labels such as Predictor, SNP, Marker or rsID)\
 use A1Col to specify the A1 alleles (look for column labels such as A1 or EffectAlle)\
 use A2Col to specify the A2 alleles (look for column labels such as A2 or OtherAllele)\
@@ -539,21 +539,14 @@ cat(paste0("The corresponding summary statistics are saved in the file ",outfile
 
 
 ################
-#give some advice
-if(length(common_geno_end)/nrow(GENO.SNPs)>0.5)
-{cat(paste0("When constructing PRS, we recommend that you use the summary statistics in ", outstem,".GENO.summaries\n\n"))}
-else
-{cat(paste0("There are relatively few genotyped SNPs, so consider whether it is better to construct PRS using the summary statistics in ", outstem,".HAPMAP.summaries\n\n"))}
-
-
-################
 #test ancestry (if possible)
 
 if(!is.null(FreqCol))
 {
 cat(paste0("Assessing the ancestry of the GWAS summary statistics\n"))
 
-#get ancestry snps and their indexes
+#get ancestry snps and their indexes, then gwas frequencies (seeing if necessary to flip)
+
 common_pca=intersect(common_geno_end,PCA.DETAILS[,1])
 match1=match(common_pca,gwas_all[,1])
 match2=match(common_pca,PCA.DETAILS[,1])
@@ -561,12 +554,11 @@ match2=match(common_pca,PCA.DETAILS[,1])
 if(length(common_pca)<10000)
 {return(paste0("Error, unable to computer ancestry PCs because ", gwasfile, " contains only ", length(common_pca), " of the ", nrow(PCA.DETAILS), " ancestry SNPs"))}
 
-#get frequencies - seeing if necessary to flip
 a1_freq=as.numeric(gwas_all[match1,ncol(gwas_all)])
 flip_preds=which(gwas_all[match1,2]!=PCA.DETAILS[match2,2])
 if(length(flip_preds)>0){a1_freq[flip_preds]=1-a1_freq[flip_preds]}
 
-#compute mean pcs
+#compute mean pcs, then get distances between the gwas and the five reference panels
 
 cents=as.numeric(PCA.DETAILS[match2,4])
 w1=as.numeric(PCA.DETAILS[match2,5])
@@ -592,15 +584,16 @@ means1=apply(proj1,2,mean)
 means2=apply(proj2,2,mean)
 means3=apply(proj3,2,mean)
 
-#get distances between the summary statistics and the five reference panels
 distances=rep(NA,5)
 for(j in 1:5){distances[j]=((means1[1]-means1[1+j])^2+(means2[1]-means2[1+j])^2+(means3[1]-means3[1+j])^2)^0.5}
 
 closest_ref=which.min(distances)
+best_panel=colnames(PCA.DETAILS)[7+closest_ref]
+
 if(min(distances)<0.01)
-{cat(paste0("The closest reference panel is ", colnames(PCA.DETAILS)[7+closest_ref],"; the distance is ", signif(min(distances),2)," indicating a very good match\n"))}
+{cat(paste0("The closest reference panel is ", best_panel, "; the distance is ", signif(min(distances),2)," indicating a very good match\n"))}
 else
-{cat(paste0("The closest reference panel is ", colnames(PCA.DETAILS)[7+closest_ref],"; the distance is ", signif(min(distances),2)," indicating the panel is sub-optimal (ideally the distance should be below 0.01)\n"))}
+{cat(paste0("The closest reference panel is ", best_panel, "; the distance is ", signif(min(distances),2)," indicating the panel is sub-optimal (ideally the distance should be below 0.01)\n"))}
 
 #visualize the results
 
@@ -622,7 +615,7 @@ cexs=rep(1.3,length(means1))
 cexs[1]=5
 cexs[2:6]=3
 
-plot_title=paste0("The closest Ref Panel is ",colnames(PCA.DETAILS)[7+closest_ref]," (distance ",signif(min(distances),2),")")
+plot_title=paste0("The closest Ref Panel is ", best_panel, " (distance ",signif(min(distances),2),")")
 
 outfile=paste0(outstem,".ancestries.pdf")
 pdf(outfile,height=6,width=8)
@@ -636,6 +629,13 @@ legend("bottomright",leg=c("AFR","AMR","EAS","EUR","SAS","FIN"),title="Ancestrie
 legend("topright",leg=c("GWAS Summary Stats","MegaPRS Ref Panels","1000GP Populations"),col=c("orange","darkgrey","darkgrey"),cex=1.5,pch=c(3,1,4),bty="n",lwd=3,lty=NA)
 
 cat(paste0("The PCA plot has been saved in ", outfile,"\n\n"))
+
+#give some advice
+
+if(length(common_geno_end)/nrow(GENO.SNPs)>0.5)
+{cat(paste0("When constructing PRS, we recommend you download the correlations with prefix ", best_panel,".GENO, and use the summary statistic file ", outstem,".GENO.summaries\n\n"))}
+else
+{cat(paste0("When constructing PRS, we would usually recommend you download the correlations with prefix ", best_panel,".GENO, and use the summary statistic file ", outstem,".GENO.summaries; however, as there are relatively few genotyped SNPs, consider whether it is better to instead use the HapMap versions (i.e., download the correlations with prefix ", best_panel,".HAPMAP, and use the summary statistic file ", outstem,".HAPMAP.summaries"))}
 }
 
 
