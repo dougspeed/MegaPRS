@@ -146,7 +146,7 @@ and use FreqCol to specify the A1 allele frequencies (look for labels such as Fr
 For example, if the predictor names are stored in the column labelled ", gwas_head[1], ", you should add NameCol=\"",gwas_head[1],\"\n\ 
 Note 1: if SEs are not provided, you can use PCol to specify the column containing p-values, while if Z-test statistics are provided, you can use ZCol instead of EffectCol and SECol\n\
 Note 2: if the sample size is divided into numbers of cases and controls, you can replace nCol with ncasesCol and ncontrolsCol (if sample size is not provided, you can instead use fixedn to provide the total sample size)\n\
-Note 3: the argument FreqCol is optional (however, we recommend its use, because it enables quality control and ancestry assessment)\n\n"))
+Note 3: the argument FreqCol is optional (however, we recommend its use, because it enables quality control and ancestry assessment)\n\n")
 return(invisible())
 }
 if(count<6)
@@ -162,7 +162,7 @@ and use FreqCol to specify the A1 allele frequencies (look for labels such as Fr
 For example, if the predictor names are stored in the column labelled ", gwas_head[1], ", you should add NameCol=\"",gwas_head[1],\"\n\ 
 Note 1: if SEs are not provided, you can use PCol to specify the column containing p-values, while if Z-test statistics are provided, you can use ZCol instead of EffectCol and SECol\n\
 Note 2: if the sample size is divided into numbers of cases and controls, you can replace nCol with ncasesCol and ncontrolsCol (if sample size is not provided, you can instead use fixedn to provide the total sample size)\n\
-Note 3: the argument FreqCol is optional (however, we recommend its use, because it enables quality control and ancestry assessment)\n\n"))
+Note 3: the argument FreqCol is optional (however, we recommend its use, because it enables quality control and ancestry assessment)\n\n")
 return(invisible())
 }
 
