@@ -264,6 +264,25 @@ if(length(Name_find)>1)
 {return(paste0("Error, there is more than one column called ", FreqCol))}
 }
 
+
+################
+#set num_offset (where the sample sizes start), got_freq (whether we have allele frequencies), and got_OR (whether we have OR)
+
+if(!is.null(ZCol)){num_offset=5}
+else{num_offset=6}
+if(is.null(FreqCol)){got_freq=1}
+else{got_freq=0}
+if(!is.null(EffectCol))
+{
+if(EffectCol=="OR"|EffectCol=="Odds"|EffectCol=="ODDS"){got_OR=1}
+else{got_OR=0}
+}
+else{got_OR=0}
+
+
+################
+#explain what will happen
+
 cat(paste0("Will read predictor names from the column called ", gwas_head[Name_find],"\n"))
 cat(paste0("Will read A1 alleles from the column called ", gwas_head[A1_find],"\n"))
 cat(paste0("Will read A2 alleles from the column called ", gwas_head[A2_find],"\n"))
@@ -291,19 +310,6 @@ if(!is.null(fixedn))
 if(!is.null(FreqCol)){cat(paste0("Will read A1 allele frequencies from the column called ", gwas_head[freq_find],"\n\n"))}
 else{cat(paste0("\nNote that if ", gwasfile," provides A1 allele frequencies, we recommend you use the argument FreqCol to specify the corresponding column\n\n"))}
 
-
-################
-#set num_offset (where the sample sizes start), got_freq (whether we have allele frequencies), and got_OR (whether we have OR)
-if(!is.null(ZCol)){num_offset=5}
-else{num_offset=6}
-if(is.null(FreqCol)){got_freq=1}
-else{got_freq=0}
-if(!is.null(EffectCol))
-{
-if(EffectCol=="OR"|EffectCol=="Odds"|EffectCol=="ODDS"){got_OR=1}
-else{got_OR=0}
-}
-else{got_OR=0}
 
 ################
 #load included data files
