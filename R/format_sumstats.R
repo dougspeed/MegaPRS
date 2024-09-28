@@ -360,9 +360,9 @@ else{cat(paste0("The file is relatively large (", round(file_size),"Mb), so this
 if(space_sep==0&comma_sep==0)
 {gwas_all=read.table(gwasfile,colClasses=classes_all,comment.char="",skip=headerRows,fill=TRUE,sep="\t")[,back_cols]}
 if(space_sep==1)
-{gwas_all=read.table(gwasfile,colClasses=classes_all,comment.char="",skip=headerRows,sep=",",fill=TRUE,sep=" ")[,back_cols]}
+{gwas_all=read.table(gwasfile,colClasses=classes_all,comment.char="",skip=headerRows,fill=TRUE,sep=" ")[,back_cols]}
 if(comma_sep==1)
-{gwas_all=read.table(gwasfile,colClasses=classes_all,comment.char="",skip=headerRows,sep=",",fill=TRUE,sep=",")[,back_cols]}
+{gwas_all=read.table(gwasfile,colClasses=classes_all,comment.char="",skip=headerRows,fill=TRUE,sep=",")[,back_cols]}
 
 colnames(gwas_all)=gwas_head[sort(req_cols)]
 
