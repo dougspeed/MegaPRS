@@ -2,7 +2,7 @@
 % Please edit documentation in R/format_sumstats.R
 \name{format_sumstats}
 \alias{format_sumstats}
-\title{Format GWAS results}
+\title{Tool for formatting GWAS results}
 \usage{
 format_sumstats(
   gwasfile = NULL,
@@ -10,10 +10,10 @@ format_sumstats(
   NameCol = NULL,
   A1Col = NULL,
   A2Col = NULL,
-  ZCol = NULL,
   EffectCol = NULL,
   SECol = NULL,
   PCol = NULL,
+  ZCol = NULL,
   nCol = NULL,
   ncasesCol = NULL,
   ncontrolsCol = NULL,
@@ -24,7 +24,22 @@ format_sumstats(
 }
 \arguments{
 \item{gwasfile}{The name of the file containing GWAS results}
+
+\item{outstem}{The desired prefix for the output files}
 }
 \description{
-Format GWAS results
+This function converts GWAS results into the format required by LDAK, infers the ancestry of the GWAS and determines a suitable reference panel
+}
+\details{
+We recommend you first run the function using only the arguments gwasfile and outstem, then follow the on-screen instructions
+}
+\examples{
+#These examples use the gwas results that come with the MegaPRS package
+ex_gwas_file=system.file("extdata", "ex_gwas.txt.gz", package="MegaPRS")
+
+#Example 1 - Provide only the two required arguments
+format_sumstats(gwasfile=ex_gwas_file, outstem="ex_out")
+
+#Example 2 - Run the function based on the on-screen instructions from Example 1
+format_sumstats(gwasfile=ex_gwas_file, outstem="ex_out", NameCol="Predictor", A1Col="A1", A2Col="A2", EffectCol="Beta", SECol="SE", nCol="n", FreqCol="A1Freq")
 }

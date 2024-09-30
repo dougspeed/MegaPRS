@@ -17,10 +17,25 @@
 ################################################
 
 
-#' Format GWAS results
+#' @title Tool for formatting GWAS results
+#
+#' @description This function converts GWAS results into the format required by LDAK, infers the ancestry of the GWAS and determines a suitable reference panel
+#
+#' @details We recommend you first run the function using only the arguments gwasfile and outstem, then follow the on-screen instructions
+#
 #' @param gwasfile The name of the file containing GWAS results
+#' @param outstem The desired prefix for the output files
 #' @export
-format_sumstats=function(gwasfile=NULL, outstem=NULL, NameCol=NULL, A1Col=NULL, A2Col=NULL, ZCol=NULL, EffectCol=NULL, SECol=NULL, PCol=NULL, nCol=NULL, ncasesCol=NULL, ncontrolsCol=NULL, fixedn=NULL, FreqCol=NULL, headerRows=NULL)
+#' @examples
+#' #These examples use the gwas results that come with the MegaPRS package
+#' ex_gwas_file=system.file("extdata", "ex_gwas.txt.gz", package="MegaPRS")
+#' 
+#' #Example 1 - Provide only the two required arguments
+#' format_sumstats(gwasfile=ex_gwas_file, outstem="ex_out")
+#' 
+#' #Example 2 - Run the function based on the on-screen instructions from Example 1
+#' format_sumstats(gwasfile=ex_gwas_file, outstem="ex_out", NameCol="Predictor", A1Col="A1", A2Col="A2", EffectCol="Beta", SECol="SE", nCol="n", FreqCol="A1Freq")
+format_sumstats=function(gwasfile=NULL, outstem=NULL, NameCol=NULL, A1Col=NULL, A2Col=NULL, EffectCol=NULL, SECol=NULL, PCol=NULL, ZCol=NULL, nCol=NULL, ncasesCol=NULL, ncontrolsCol=NULL, fixedn=NULL, FreqCol=NULL, headerRows=NULL)
 {
 ################
 #get start time
@@ -458,7 +473,7 @@ if(length(valid_preds)<nrow(gwas_all))
 
 #print out some summaries
 
-cat(paste0("The median Z statistic is ", round(median(Z_stats[valid_preds]),4)," (this should be close to zero), while ", round(100*mean(Z_stats[valid_preds]>0),2),"% are positive (this should be close to 50%)\n"))
+cat(paste0("The Z statistic have medium ", round(median(Z_stats[valid_preds]),4)," (this should be close to zero), while ", round(100*mean(Z_stats[valid_preds]>0),2),"% are positive (this should be close to 50%)\n"))
 
 cat(paste0("The average sample size is ", round(mean(sample_sizes[valid_preds]),1)," (the range is ", min(sample_sizes[valid_preds])," to ", max(sample_sizes[valid_preds]),")\n"))
 
@@ -577,10 +592,10 @@ for(j in 1:5){distances[j]=((means1[1]-means1[1+j])^2+(means2[1]-means2[1+j])^2+
 closest_ref=which.min(distances)
 best_panel=colnames(PCA.DETAILS)[7+closest_ref]
 
-if(min(distances)<0.01)
+if(min(distances)<1e-8)
 {cat(paste0("The closest reference panel is ", best_panel, "; the distance is ", signif(min(distances),2)," indicating a very good match\n"))}
 else
-{cat(paste0("The closest reference panel is ", best_panel, "; the distance is ", signif(min(distances),2)," indicating the panel is sub-optimal (ideally the distance should be below 0.01)\n"))}
+{cat(paste0("The closest reference panel is ", best_panel, "; the distance is ", signif(min(distances),2)," indicating the panel is sub-optimal (ideally the distance should be below 1e-8)\n"))}
 
 #visualize the results
 
@@ -622,7 +637,7 @@ cat(paste0("The PCA plot has been saved in ", outfile,"\n\n"))
 cat(paste0("When constructing PRS, we recommend you download the correlations with prefix ", best_panel,".GENO, and use the summary statistics in ", outstem,".GENO.summaries\n"))
 
 if(length(common_geno_end)/nrow(GENO.SNPs)<0.8)
-{cat(paste0("However, please be aware that summary statistics are missing for a relatively large proportion of the genotyped predictors (",100-round(length(common_geno_end)/nrow(GENO.SNPs)*100),"%), which will probably result in less accurate PRS\n"))}
+{cat(paste0("However, please be aware that summary statistics are missing for a relatively large proportion of the genotyped predictors (",100-round(length(common_geno_end)/nrow(GENO.SNPs)*100),"%), which can probably result in low-accuracy PRS\n"))}
 cat("\n")
 }
 
