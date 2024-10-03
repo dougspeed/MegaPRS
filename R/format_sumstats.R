@@ -475,7 +475,10 @@ if(length(valid_preds)<nrow(gwas_all))
 
 cat(paste0("The Z statistic have medium ", round(median(Z_stats[valid_preds]),4)," (this should be close to zero), while ", round(100*mean(Z_stats[valid_preds]>0),2),"% are positive (this should be close to 50%)\n"))
 
+if(!is.null(fixedn))
+{
 cat(paste0("The average sample size is ", round(mean(sample_sizes[valid_preds]),1)," (the range is ", min(sample_sizes[valid_preds])," to ", max(sample_sizes[valid_preds]),")\n"))
+}
 
 #save results
 
@@ -508,8 +511,12 @@ common_position=intersect(final_ss[,1],GENO.SNPs[,4])
 generic_names=c(paste0(GENO.SNPs[,4],"_",GENO.SNPs[,2],"_",GENO.SNPs[,3]),paste0(GENO.SNPs[,4],"_",GENO.SNPs[,3],"_",GENO.SNPs[,2]))
 common_generic=intersect(final_ss[,1],generic_names)
 
+print(length(common_name))
+print(length(common_position))
+print(length(common_generic))
+
 num_overlap=max(c(length(common_name),length(common_position),length(common_generic)))
-if(num_overlap)
+if(num_overlap==0)
 {
 return(paste0("Error, there are no genotyped SNPs (have searched based on SNP names and positions)"))
 }
