@@ -381,7 +381,7 @@ if(comma_sep==1)
 
 colnames(gwas_all)=gwas_head[sort(req_cols)]
 
-cat(paste0("In total, there are results for ", nrow(gwas_all)," predictors (here are the first ten rows)\n\n"))
+cat(paste0("In total, there are results for ", nrow(gwas_all)," predictors (here are the first six rows)\n\n"))
 print(head(gwas_all))
 cat("\n")
 
@@ -496,47 +496,77 @@ cat(paste0("The formatted summary statistics are saved in the file ",outfile,"\n
 
 
 ################
-#find overlap with genotyped SNPs
+#find overlap with genotyped SNPs - try to match based on name, position, and genetic
 
-common_geno_start=intersect(final_ss[,1],GENO.SNPs[,1])
-if(length(common_geno_start)==0)
+cat(paste0("Searching for overlap with the ", nrow(GENO.SNPs), " genotyped SNPs (here are the first six of these)\n"))
+print(head(GENO.SNPs))
+cat("\n")
+
+common_name=intersect(final_ss[,1],GENO.SNPs[,1])
+common_position=intersect(final_ss[,1],GENO.SNPs[,4])
+
+generic_names=c(paste0(GENO.SNPs[,4],"_",GENO.SNPs[,2],"_",GENO.SNPs[,3]),paste0(GENO.SNPs[,4],"_",GENO.SNPs[,3],"_",GENO.SNPs[,2]))
+common_generic=intersect(final_ss[,1],generic_names)
+
+num_overlap=max(c(length(common_name),length(common_position),length(common_generic)))
+if(num_overlap)
 {
-return(paste0("Error, there is no overlap with the ", nrow(GENO.SNPs), " genotyped SNPs"))
+return(paste0("Error, there are no genotyped SNPs (have searched based on SNP names and positions)"))
 }
-cat(paste0("Have found ", length(common_geno_start)," of the ", nrow(GENO.SNPs), " genotyped SNPs\n"))
+cat(paste0("Have found ", num_overlap," of the ", nrow(GENO.SNPs), " genotyped SNPs\n"))
+
+
+################
+#find indexes of overlapping SNPs
+
+best_search=which.max(c(length(common_name),length(common_position),length(common_generic)))
+
+if(best_search==1)	#matching based on name
+{
+match1=match(common_name,final_ss[,1])
+match2=match(common_name,GENO.SNPs[,1])
+}
+if(best_search==2)	#matching based on position
+{
+match1=match(common_position,final_ss[,1])
+match2=match(common_position,GENO.SNPs[,4])
+}
+if(best_search==3)	#matching based on generic format
+{
+match1=match(common_generic,final_ss[,1])
+match2=(match(common_position,generic_names)-1)%%nrow(GENO.SNPs)+1
+}
 
 
 ################
 #check alleles
 
-match1=match(common_geno_start,final_ss[,1])
-match2=match(common_geno_start,GENO.SNPs[,1])
 find_a1= (final_ss[match1,2]==GENO.SNPs[match2,2]) + (final_ss[match1,2]==GENO.SNPs[match2,3])
 find_a2= (final_ss[match1,3]==GENO.SNPs[match2,2]) + (final_ss[match1,3]==GENO.SNPs[match2,3])
-common_geno_end=common_geno_start[which(find_a1==1&find_a2==1)]
+match_alleles=which(find_a1==1&find_a2==1)
 
-if(length(common_geno_end)==0)
+if(length(match_alleles)==0)
 {
 pp=final_ss[match1[1],1]
 a1=final_ss[match1[1],2]
 a2=final_ss[match1[1],3]
 b1=GENO.SNPs[match2[1],2]
 b2=GENO.SNPs[match2[1],3]
-return(paste0("Error, none of the ", length(common_geno_start), " genotyped SNPs have consistent alleles (e.g., ",pp ," should have alleles ", b1," and ", b2, ", but the alleles in ", gwasfile," are ", a1," and ", a2,")"))
+return(paste0("Error, none of the ", num_found, " genotyped SNPs have consistent alleles (e.g., ",pp ," should have alleles ", b1," and ", b2, ", but the alleles in ", gwasfile," are ", a1," and ", a2,")"))
 }
 
-if(length(common_geno_end)<length(common_geno_start))
+if(length(match_alleles)<num_overlap)
 {
-cat(paste0("Warning, after checking alleles, the number of genotyped SNPs has been reduced to ", length(common_geno_end),"\n"))
+cat(paste0("Warning, after checking alleles, the number of genotyped SNPs has been reduced to ", length(match_alleles),"\n"))
 }
 
 
 ################
-#print out summary statistics
+#print out summary statistics for overlapping genotyped SNPs
 
-match_preds=match(common_geno_end,final_ss[,1])
+subset_ss=cbind(GENO.SNPs[match2,1],final_ss[match1,-1])[match_alleles,]
 outfile=paste0(outstem,".GENO.summaries")
-write.table(final_ss[match_preds,],outfile,row.names=F,col.names=TRUE,quote=FALSE)
+write.table(subset_ss,outfile,row.names=F,col.names=TRUE,quote=FALSE)
 cat(paste0("The corresponding summary statistics are saved in the file ",outfile,"\n\n"))
 
 
@@ -549,15 +579,15 @@ cat(paste0("Assessing the ancestry of the GWAS summary statistics\n"))
 
 #get ancestry snps and their indexes, then gwas frequencies (seeing if necessary to flip)
 
-common_pca=intersect(common_geno_end,PCA.DETAILS[,1])
-match1=match(common_pca,gwas_all[,1])
+common_pca=intersect(subset_ss[,1],PCA.DETAILS[,1])
+match1=match(common_pca,subset_ss[,1])
 match2=match(common_pca,PCA.DETAILS[,1])
 
 if(length(common_pca)<10000)
 {return(paste0("Error, unable to computer ancestry PCs because ", gwasfile, " contains only ", length(common_pca), " of the ", nrow(PCA.DETAILS), " ancestry SNPs"))}
 
-a1_freq=as.numeric(gwas_all[match1,ncol(gwas_all)])
-flip_preds=which(gwas_all[match1,2]!=PCA.DETAILS[match2,2])
+a1_freq=as.numeric(subset_ss[match1,ncol(subset_ss)])
+flip_preds=which(subset_ss[match1,2]!=PCA.DETAILS[match2,2])
 if(length(flip_preds)>0){a1_freq[flip_preds]=1-a1_freq[flip_preds]}
 
 #compute mean pcs, then get distances between the gwas and the five reference panels
@@ -636,8 +666,8 @@ cat(paste0("The PCA plot has been saved in ", outfile,"\n\n"))
 
 cat(paste0("When constructing PRS, we recommend you download the correlations with prefix ", best_panel,".GENO, and use the summary statistics in ", outstem,".GENO.summaries\n"))
 
-if(length(common_geno_end)/nrow(GENO.SNPs)<0.8)
-{cat(paste0("However, please be aware that summary statistics are missing for a relatively large proportion of the genotyped predictors (",100-round(length(common_geno_end)/nrow(GENO.SNPs)*100),"%), which can probably result in low-accuracy PRS\n"))}
+if(nrow(subset_ss)/nrow(GENO.SNPs)<0.8)
+{cat(paste0("However, please be aware that summary statistics are missing for a relatively large proportion of the genotyped predictors (",100-round(nrow(subset_ss)/nrow(GENO.SNPs)*100),"%), which can result in low-accuracy PRS\n"))}
 cat("\n")
 }
 
