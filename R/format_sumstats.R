@@ -475,7 +475,7 @@ if(length(valid_preds)<nrow(gwas_all))
 
 cat(paste0("The Z statistic have medium ", round(median(Z_stats[valid_preds]),4)," (this should be close to zero), while ", round(100*mean(Z_stats[valid_preds]>0),2),"% are positive (this should be close to 50%)\n"))
 
-if(!is.null(fixedn))
+if(is.null(fixedn))
 {
 cat(paste0("The average sample size is ", round(mean(sample_sizes[valid_preds]),1)," (the range is ", min(sample_sizes[valid_preds])," to ", max(sample_sizes[valid_preds]),")\n"))
 }
@@ -510,10 +510,6 @@ common_position=intersect(final_ss[,1],GENO.SNPs[,4])
 
 generic_names=c(paste0(GENO.SNPs[,4],"_",GENO.SNPs[,2],"_",GENO.SNPs[,3]),paste0(GENO.SNPs[,4],"_",GENO.SNPs[,3],"_",GENO.SNPs[,2]))
 common_generic=intersect(final_ss[,1],generic_names)
-
-print(length(common_name))
-print(length(common_position))
-print(length(common_generic))
 
 num_overlap=max(c(length(common_name),length(common_position),length(common_generic)))
 if(num_overlap==0)
@@ -572,6 +568,7 @@ cat(paste0("Warning, after checking alleles, the number of genotyped SNPs has be
 #print out summary statistics for overlapping genotyped SNPs
 
 subset_ss=cbind(GENO.SNPs[match2,1],final_ss[match1,-1])[match_alleles,]
+colnames(subset_ss)=c("SNP","A1","A2","Z","n","A1Freq")
 outfile=paste0(outstem,".GENO.summaries")
 write.table(subset_ss,outfile,row.names=F,col.names=TRUE,quote=FALSE)
 cat(paste0("The corresponding summary statistics are saved in the file ",outfile,"\n\n"))
