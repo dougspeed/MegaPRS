@@ -385,6 +385,10 @@ cat(paste0("In total, there are results for ", nrow(gwas_all)," predictors (here
 print(head(gwas_all))
 cat("\n")
 
+count_rs=length(grep("rs",gwas_all[,1]))
+count_generic=length(grep(":",gwas_all[,1]))
+cat(paste0("It appears ", count_rs," of the predictors have rs IDs, while ", count_generic," have generic IDs\n\n"))
+
 
 ################
 #see if any predictors are missing names
@@ -537,7 +541,7 @@ match2=match(common_position,GENO.SNPs[,4])
 if(best_search==3)	#matching based on generic format
 {
 match1=match(common_generic,final_ss[,1])
-match2=(match(common_position,generic_names)-1)%%nrow(GENO.SNPs)+1
+match2=(match(common_generic,generic_names)-1)%%nrow(GENO.SNPs)+1
 }
 
 
@@ -555,7 +559,7 @@ a1=final_ss[match1[1],2]
 a2=final_ss[match1[1],3]
 b1=GENO.SNPs[match2[1],2]
 b2=GENO.SNPs[match2[1],3]
-return(paste0("Error, none of the ", num_found, " genotyped SNPs have consistent alleles (e.g., ",pp ," should have alleles ", b1," and ", b2, ", but the alleles in ", gwasfile," are ", a1," and ", a2,")"))
+return(paste0("Error, none of the ", num_overlap, " genotyped SNPs have consistent alleles (e.g., ",pp ," should have alleles ", b1," and ", b2, ", but the alleles in ", gwasfile," are ", a1," and ", a2,")"))
 }
 
 if(length(match_alleles)<num_overlap)
@@ -567,8 +571,9 @@ cat(paste0("Warning, after checking alleles, the number of genotyped SNPs has be
 ################
 #print out summary statistics for overlapping genotyped SNPs
 
-subset_ss=cbind(GENO.SNPs[match2,1],final_ss[match1,-1])[match_alleles,]
-colnames(subset_ss)=c("SNP","A1","A2","Z","n","A1Freq")
+subset_ss=final_ss[match1[match_alleles],]
+subset_ss[,1]=GENO.SNPs[match2[match_alleles],1]
+colnames(subset_ss)[1]="SNP"
 outfile=paste0(outstem,".GENO.summaries")
 write.table(subset_ss,outfile,row.names=F,col.names=TRUE,quote=FALSE)
 cat(paste0("The corresponding summary statistics are saved in the file ",outfile,"\n\n"))
