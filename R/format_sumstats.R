@@ -477,7 +477,7 @@ if(length(valid_preds)<nrow(gwas_all))
 
 #print out some summaries
 
-cat(paste0("The Z statistic have medium ", round(median(Z_stats[valid_preds]),4)," (this should be close to zero), while ", round(100*mean(Z_stats[valid_preds]>0),2),"% are positive (this should be close to 50%)\n"))
+cat(paste0("The Z statistics have medium ", round(median(Z_stats[valid_preds]),4)," (this should be close to zero), while ", round(100*mean(Z_stats[valid_preds]>0),2),"% are positive (this should be close to 50%)\n"))
 
 if(is.null(fixedn))
 {
@@ -509,11 +509,11 @@ cat(paste0("Searching for overlap with the ", nrow(GENO.SNPs), " genotyped SNPs 
 print(head(GENO.SNPs))
 cat("\n")
 
-common_name=intersect(final_ss[,1],GENO.SNPs[,1])
-common_position=intersect(final_ss[,1],GENO.SNPs[,4])
+common_name=intersect(GENO.SNPs[,1],final_ss[,1])
+common_position=intersect(GENO.SNPs[,4],final_ss[,1])
 
 generic_names=c(paste0(GENO.SNPs[,4],"_",GENO.SNPs[,2],"_",GENO.SNPs[,3]),paste0(GENO.SNPs[,4],"_",GENO.SNPs[,3],"_",GENO.SNPs[,2]))
-common_generic=intersect(final_ss[,1],generic_names)
+common_generic=intersect(generic_names,final_ss[,1])
 
 num_overlap=max(c(length(common_name),length(common_position),length(common_generic)))
 if(num_overlap==0)
